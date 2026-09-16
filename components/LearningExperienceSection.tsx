@@ -1,42 +1,25 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import Image from 'next/image';
 import { motion } from 'motion/react';
-import { Sparkles, Laptop, Users, MessageSquareCode, Rocket } from 'lucide-react';
+import { Sparkles, Laptop, Users, MessageSquareCode, Rocket, ArrowRight } from 'lucide-react';
 
 interface LearningExperienceSectionProps {
-  onOpenVideo: () => void;
+  onOpenVideo?: () => void;
 }
 
 export default function LearningExperienceSection({ onOpenVideo }: LearningExperienceSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
-
-    video.defaultMuted = true;
-    video.muted = true;
-
-    const playVideo = () => {
-      const promise = video.play();
-      if (promise !== undefined) {
-        promise.catch(() => {});
-      }
-    };
-
-    playVideo();
-
-    const handlePause = () => {
-      if (video && video.paused) {
-        playVideo();
-      }
-    };
-
-    video.addEventListener('pause', handlePause);
-    return () => {
-      video.removeEventListener('pause', handlePause);
-    };
+    if (video) {
+      video.defaultMuted = true;
+      video.muted = true;
+      video.play().catch(() => {});
+    }
   }, []);
 
   const pillars = [
@@ -62,33 +45,53 @@ export default function LearningExperienceSection({ onOpenVideo }: LearningExper
     }
   ];
 
+  const scrollToCourses = () => {
+    const el = document.getElementById('courses');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section
       id="experience"
       className="relative w-full py-24 sm:py-32 bg-black overflow-hidden border-t border-white/5"
     >
-      {/* Background Full-Width Video */}
-      <div className="absolute inset-0 z-0 h-full w-full">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80"
-          className="h-full w-full object-cover opacity-35"
-        >
-          <source src="/videos/classroom.mp4" type="video/mp4" />
-        </video>
+      {/* Background Full-Width Video (New Working Educational Video) */}
+      <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
+        {/* Poster Fallback Image */}
+        <Image
+          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80"
+          alt="OneSkills Academy Modern Technology Education"
+          fill
+          className={`object-cover transition-opacity duration-700 ${videoError ? 'opacity-30' : 'opacity-0'}`}
+          referrerPolicy="no-referrer"
+        />
 
-        {/* Ambient Gradients */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-black/75 to-black/80" />
+        {!videoError && (
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80"
+            onError={() => setVideoError(true)}
+            className="h-full w-full object-cover opacity-35"
+          >
+            <source src="/videos/learning-classroom.mp4" type="video/mp4" />
+          </video>
+        )}
+
+        {/* Ambient Gradients & Gold Tint */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-black/80 to-black/85" />
         <div className="absolute inset-0 pointer-events-none bg-radial-at-c from-transparent via-black/50 to-black/90" />
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Cinematic Center Text Overlay */}
+        {/* Center Text Overlay */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -151,15 +154,16 @@ export default function LearningExperienceSection({ onOpenVideo }: LearningExper
           })}
         </div>
 
-        {/* Interactive Video Tour Cue */}
+        {/* Action Cue */}
         <div className="mt-12 flex justify-center">
           <button
-            id="experience-tour-btn"
-            onClick={onOpenVideo}
-            className="inline-flex items-center gap-2 text-xs font-mono font-bold tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
+            id="experience-courses-btn"
+            onClick={scrollToCourses}
+            className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-black/60 px-5 py-2 text-xs font-mono font-bold tracking-widest text-amber-400 hover:border-amber-400 hover:text-amber-300 backdrop-blur-md transition-all shadow-md active:scale-95"
           >
             <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
-            <span>SEE CLASSROOM LAB TOURS & STUDENT STUDIOS ▶</span>
+            <span>EXPLORE OUR CURRICULA & LAB WORKSTATIONS</span>
+            <ArrowRight className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>

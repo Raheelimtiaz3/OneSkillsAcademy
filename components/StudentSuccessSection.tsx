@@ -1,20 +1,112 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, CheckCircle2, TrendingUp, DollarSign, Globe, Award } from 'lucide-react';
+import { Sparkles, CheckCircle2 } from 'lucide-react';
 import { SUCCESS_METRICS, MARQUEE_SKILLS } from '@/data/statistics';
 
 export default function StudentSuccessSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const hasTriggeredRef = useRef(false);
+
+  // Initial values at 0 so numbers do NOT count on initial page load
+  const [counts, setCounts] = useState<{ [key: string]: number }>({
+    'succ-1': 0,
+    'succ-2': 0,
+    'succ-3': 0,
+    'succ-4': 0,
+  });
+
   const highlights = [
     { label: 'Top Freelancer Platforms', detail: 'Upwork Top-Rated, Fiverr Pro, Behance Curated' },
     { label: 'Average Graduate Time-to-Client', detail: 'Under 45 Days Post-Curriculum' },
     { label: 'Global Remote Client Reach', detail: 'US, UK, Canada, UAE, Europe & Australia' }
   ];
 
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+
+    let rafId: number | null = null;
+
+    // Respect reduced-motion preferences
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const startCounting = () => {
+      if (hasTriggeredRef.current) return;
+      hasTriggeredRef.current = true;
+
+      const targets: Record<string, number> = {
+        'succ-1': 500,
+        'succ-2': 1000,
+        'succ-3': 10,
+        'succ-4': 20,
+      };
+
+      if (prefersReducedMotion) {
+        setCounts(targets);
+        return;
+      }
+
+      const duration = 1800; // 1.8 seconds smooth duration
+      const startTime = performance.now();
+
+      // Smooth Quartic ease-out: rapid responsive rise decelerating seamlessly into target
+      const easeOutQuart = (x: number) => 1 - Math.pow(1 - x, 4);
+
+      const updateCount = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = easeOutQuart(progress);
+
+        setCounts({
+          'succ-1': Math.round(ease * targets['succ-1']),
+          'succ-2': Math.round(ease * targets['succ-2']),
+          'succ-3': Math.round(ease * targets['succ-3']),
+          'succ-4': Math.round(ease * targets['succ-4']),
+        });
+
+        if (progress < 1) {
+          rafId = requestAnimationFrame(updateCount);
+        } else {
+          setCounts(targets);
+        }
+      };
+
+      rafId = requestAnimationFrame(updateCount);
+    };
+
+    // IntersectionObserver triggers counting only when the section enters the viewport
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry && entry.isIntersecting && !hasTriggeredRef.current) {
+          startCounting();
+          observer.disconnect(); // Trigger only once per page load
+        }
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -40px 0px',
+      }
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, []);
+
   return (
     <section
       id="success"
+      ref={sectionRef}
       className="relative w-full py-24 sm:py-32 bg-[#060608] overflow-hidden border-t border-white/5"
     >
       {/* Background Subtle Ambience */}
@@ -51,8 +143,8 @@ export default function StudentSuccessSection() {
               transition={{ duration: 0.5, delay: idx * 0.1 }}
               className="relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-8 backdrop-blur-md group hover:border-amber-500/40 hover:bg-zinc-900/80 transition-all duration-300"
             >
-              <div className="font-heading text-4xl sm:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200 group-hover:scale-105 transition-transform duration-300 origin-left">
-                {metric.value}
+              <div className="font-heading text-4xl sm:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200 group-hover:scale-105 transition-transform duration-300 origin-left tabular-nums">
+                {counts[metric.id] ?? 0}{metric.suffix}
               </div>
 
               <h3 className="mt-3 text-sm sm:text-base font-bold text-white tracking-wide">

@@ -14,10 +14,10 @@ export const KEY_STATS: StatItem[] = [
 ];
 
 export const SUCCESS_METRICS = [
-  { id: 'succ-1', value: '500+', label: 'Students', subtext: 'Graduated & Upskilled' },
-  { id: 'succ-2', value: '1000+', label: 'Projects / Assignments', subtext: 'Shipped to GitHub & Behance' },
-  { id: 'succ-3', value: '10+', label: 'Courses', subtext: 'Continuously updated' },
-  { id: 'succ-4', value: '20+', label: 'Skill Areas', subtext: 'In high market demand' },
+  { id: 'succ-1', target: 500, suffix: '+', value: '500+', label: 'Students', subtext: 'Graduated & Upskilled' },
+  { id: 'succ-2', target: 1000, suffix: '+', value: '1000+', label: 'Projects / Assignments', subtext: 'Shipped to GitHub & Behance' },
+  { id: 'succ-3', target: 10, suffix: '+', value: '10+', label: 'Courses', subtext: 'Continuously updated' },
+  { id: 'succ-4', target: 20, suffix: '+', value: '20+', label: 'Skill Areas', subtext: 'In high market demand' },
 ];
 
 export const WHY_ITEMS = [

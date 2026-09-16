@@ -8,7 +8,7 @@ import ThreeCanvas from './ThreeCanvas';
 
 interface HeroSectionProps {
   onExploreCourses: () => void;
-  onWatchIntro: () => void;
+  onWatchIntro?: () => void;
 }
 
 export default function HeroSection({ onExploreCourses, onWatchIntro }: HeroSectionProps) {
@@ -174,13 +174,19 @@ export default function HeroSection({ onExploreCourses, onWatchIntro }: HeroSect
 
           <button
             id="hero-watch-intro-btn"
-            onClick={onWatchIntro}
+            onClick={() => {
+              if (onWatchIntro) {
+                onWatchIntro();
+              } else {
+                scrollToSection('about');
+              }
+            }}
             className="group flex w-full sm:w-auto items-center justify-center gap-3 rounded-full border border-white/20 bg-white/5 px-7 py-4 text-sm font-bold tracking-wider text-white backdrop-blur-md transition-all duration-300 hover:bg-white/15 hover:border-amber-500/50 hover:text-amber-300"
           >
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 group-hover:scale-110 transition-transform">
-              <Play className="h-3.5 w-3.5 fill-current translate-x-0.5" />
+              <Sparkles className="h-3.5 w-3.5 text-amber-400" />
             </span>
-            <span>WATCH INTRO ▶</span>
+            <span>CAMPUS LABS</span>
           </button>
         </motion.div>
 

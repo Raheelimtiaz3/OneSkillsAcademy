@@ -1,48 +1,15 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
+import Image from 'next/image';
 import { motion } from 'motion/react';
-import { Play, Sparkles, Monitor, Users, Award } from 'lucide-react';
+import { Sparkles, Monitor, Users, Award, Laptop, Code2, Terminal } from 'lucide-react';
 
 interface FeaturedVideoSectionProps {
-  onOpenVideo: () => void;
+  onOpenVideo?: () => void;
 }
 
 export default function FeaturedVideoSection({ onOpenVideo }: FeaturedVideoSectionProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.defaultMuted = true;
-    video.muted = true;
-
-    const playVideo = () => {
-      const promise = video.play();
-      if (promise !== undefined) {
-        promise.catch(() => {
-          // Autoplay fallback
-        });
-      }
-    };
-
-    playVideo();
-
-    // Auto-resume watchdog: if browser ever pauses the video, resume immediately
-    const handlePause = () => {
-      if (video && video.paused) {
-        playVideo();
-      }
-    };
-
-    video.addEventListener('pause', handlePause);
-
-    return () => {
-      video.removeEventListener('pause', handlePause);
-    };
-  }, []);
-
   return (
     <section
       id="featured-video"
@@ -68,35 +35,50 @@ export default function FeaturedVideoSection({ onOpenVideo }: FeaturedVideoSecti
           </p>
         </div>
 
-        {/* Cinematic Video Banner Container */}
+        {/* Premium Cinematic Visual Container (Static Image Replacement) */}
         <div className="relative mx-auto max-w-5xl rounded-3xl overflow-hidden border border-white/15 bg-zinc-950 shadow-2xl shadow-amber-500/10 group">
           <div className="relative aspect-[16/9] w-full overflow-hidden">
-            {/* Ambient looping 10-second video background - always muted and playing continuously */}
-            <video
-              ref={videoRef}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              poster="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1600&q=80"
-              className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
-            >
-              <source src="/videos/featured-lab.mp4" type="video/mp4" />
-            </video>
+            {/* Cinematic High-Resolution Static Visual: Students Coding on Laptops in Modern Lab */}
+            <Image
+              src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1920&q=85"
+              alt="Students learning digital skills and coding in OneSkills modern lab"
+              fill
+              priority
+              className="object-cover transition-transform duration-1000 group-hover:scale-105"
+              referrerPolicy="no-referrer"
+            />
 
-            {/* Dark Cinematic Gradients */}
-            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-black/40 to-black/30" />
-            <div className="absolute inset-0 pointer-events-none bg-radial-at-c from-transparent via-black/40 to-black/80" />
+            {/* Subtle Dark Gradient Overlays */}
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-black/55 to-black/35" />
+            <div className="absolute inset-0 pointer-events-none bg-radial-at-c from-transparent via-black/45 to-black/85" />
 
-            {/* Content Overlays */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 sm:p-12">
-              {/* Overlay Slogan */}
+            {/* Gold Decorative Corner & Ambient Highlights */}
+            <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-amber-500/20 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-amber-500/20 via-transparent to-transparent pointer-events-none" />
+            
+            {/* Top Badges & Status Pill */}
+            <div className="absolute top-4 sm:top-6 left-4 sm:left-6 right-4 sm:right-6 flex items-center justify-between z-10 pointer-events-none">
+              <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-black/60 px-3.5 py-1.5 backdrop-blur-md">
+                <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-amber-300">
+                  Live Practical Studio
+                </span>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3 py-1.5 backdrop-blur-md">
+                <Terminal className="h-3.5 w-3.5 text-amber-400" />
+                <span className="text-[11px] font-mono text-zinc-300">
+                  Lahore-Sargodha Rd Campus
+                </span>
+              </div>
+            </div>
+
+            {/* Center Content Typography */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 sm:p-12 z-10 pointer-events-none">
               <motion.span
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="font-mono text-xs sm:text-sm tracking-[0.3em] font-bold text-amber-400 uppercase mb-4"
+                className="font-mono text-xs sm:text-sm tracking-[0.3em] font-bold text-amber-400 uppercase mb-3 drop-shadow-md"
               >
                 ONE SKILL AT A TIME
               </motion.span>
@@ -105,30 +87,40 @@ export default function FeaturedVideoSection({ onOpenVideo }: FeaturedVideoSecti
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="font-heading text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight drop-shadow-lg"
+                className="font-heading text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight drop-shadow-xl max-w-2xl"
               >
-                LEARN. PRACTICE. CREATE.
+                LEARN. PRACTICE.{' '}
+                <span className="text-amber-400">CREATE.</span>
               </motion.h3>
 
-              {/* Large Circular Play Button */}
-              <motion.button
-                id="featured-video-play-btn"
-                onClick={onOpenVideo}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                className="mt-8 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-full border-2 border-amber-400 bg-amber-500/30 text-amber-300 backdrop-blur-xl shadow-2xl shadow-amber-500/40 transition-all duration-300 hover:bg-amber-500 hover:text-zinc-950 group-hover:shadow-amber-500/60"
-                aria-label="Play full video"
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="mt-3 text-xs sm:text-sm text-zinc-300 max-w-lg drop-shadow-md leading-relaxed"
               >
-                <Play className="h-8 w-8 sm:h-10 sm:w-10 translate-x-1 fill-current" />
-              </motion.button>
+                Interactive hands-on workstations paired with real-world freelance and development sprints.
+              </motion.p>
 
-              <span className="mt-4 text-xs font-mono tracking-widest text-zinc-300">
-                CLICK TO WATCH FULL EXPERIENCE (2:15)
-              </span>
+              {/* Gold Decorative Pill Tags */}
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/15 px-3 py-1 text-xs font-semibold text-amber-300 backdrop-blur-md">
+                  <Laptop className="h-3.5 w-3.5" />
+                  Coding Labs
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/15 px-3 py-1 text-xs font-semibold text-amber-300 backdrop-blur-md">
+                  <Code2 className="h-3.5 w-3.5" />
+                  Freelance Sprints
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/15 px-3 py-1 text-xs font-semibold text-amber-300 backdrop-blur-md">
+                  <Users className="h-3.5 w-3.5" />
+                  1-on-1 Mentorship
+                </span>
+              </div>
             </div>
 
             {/* Bottom Floating Highlights */}
-            <div className="absolute bottom-4 left-4 right-4 hidden sm:flex items-center justify-between rounded-xl border border-white/10 bg-black/60 px-5 py-3 text-xs text-zinc-300 backdrop-blur-md">
+            <div className="absolute bottom-4 left-4 right-4 hidden sm:flex items-center justify-between rounded-xl border border-white/10 bg-black/70 px-5 py-3 text-xs text-zinc-300 backdrop-blur-md z-10 pointer-events-none">
               <div className="flex items-center gap-2">
                 <Monitor className="h-4 w-4 text-amber-400" />
                 <span>Modern Silicon-Grade Workstations</span>

@@ -2,19 +2,16 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'motion/react';
-import { Play, Pause, Maximize2, Sparkles, CheckCircle2, Award, Terminal } from 'lucide-react';
+import { Sparkles, CheckCircle2, Award, Terminal, Laptop, Code2 } from 'lucide-react';
 import Image from 'next/image';
 import { KEY_STATS } from '@/data/statistics';
 
 interface AboutSectionProps {
-  onWatchVideo: () => void;
+  onWatchVideo?: () => void;
 }
 
 export default function AboutSection({ onWatchVideo }: AboutSectionProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const aboutVideoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [videoError, setVideoError] = useState(false);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const [counts, setCounts] = useState<{ [key: string]: number }>({
     students: 0,
@@ -22,37 +19,6 @@ export default function AboutSection({ onWatchVideo }: AboutSectionProps) {
     projects: 0,
     practical: 0
   });
-
-  useEffect(() => {
-    const video = aboutVideoRef.current;
-    if (!video) return;
-    video.defaultMuted = true;
-    video.muted = true;
-    const promise = video.play();
-    if (promise !== undefined) {
-      promise
-        .then(() => setIsPlaying(true))
-        .catch(() => {
-          setIsPlaying(false);
-        });
-    }
-  }, []);
-
-  const togglePlayPause = () => {
-    const video = aboutVideoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      const promise = video.play();
-      if (promise !== undefined) {
-        promise
-          .then(() => setIsPlaying(true))
-          .catch(() => {});
-      }
-    } else {
-      video.pause();
-      setIsPlaying(false);
-    }
-  };
 
   useEffect(() => {
     if (!isInView) return;
@@ -182,65 +148,44 @@ export default function AboutSection({ onWatchVideo }: AboutSectionProps) {
               <div className="relative aspect-[4/3] w-full overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80"
-                  alt="Students learning at OneSkills Academy"
+                  alt="Students learning digital skills at OneSkills Academy"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+                <div className="absolute inset-0 pointer-events-none bg-radial-at-c from-transparent via-transparent to-black/60" />
 
-                {/* Looping video snippet with error fallback */}
-                {!videoError && (
-                  <video
-                    ref={aboutVideoRef}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    onError={() => setVideoError(true)}
-                    className="absolute inset-0 h-full w-full object-cover opacity-75 mix-blend-screen"
-                  >
-                    <source src="/videos/about-lab.mp4" type="video/mp4" />
-                  </video>
-                )}
-
-                {/* Quick Modal Expand on Card */}
-                <div className="absolute top-4 right-4 z-20">
-                  <button
-                    id="about-card-expand-btn"
-                    onClick={onWatchVideo}
-                    className="flex items-center gap-1.5 rounded-full border border-white/20 bg-zinc-950/80 px-3 py-1.5 text-xs font-mono font-medium text-zinc-300 backdrop-blur-md shadow-lg transition-all hover:border-amber-400 hover:text-white"
-                    aria-label="Expand video modal"
-                  >
-                    <Maximize2 className="h-3.5 w-3.5 text-amber-400" />
-                    <span>Full Experience</span>
-                  </button>
+                {/* Top Floating Badge */}
+                <div className="absolute top-4 right-4 z-10">
+                  <div className="flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-zinc-950/80 px-3 py-1.5 text-xs font-mono font-medium text-amber-300 backdrop-blur-md shadow-lg">
+                    <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                    <span>Hands-On Studio</span>
+                  </div>
                 </div>
 
-                {/* Center Play/Pause Button */}
-                <button
-                  id="about-play-video-btn"
-                  onClick={togglePlayPause}
-                  className="absolute inset-0 m-auto flex h-20 w-20 items-center justify-center rounded-full border-2 border-amber-400/80 bg-zinc-950/70 text-amber-400 shadow-2xl shadow-amber-500/30 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-amber-500 hover:text-zinc-950 group-hover:border-amber-400"
-                  aria-label={isPlaying ? 'Pause video' : 'Play video'}
-                >
-                  {isPlaying ? (
-                    <Pause className="h-8 w-8 fill-current" />
-                  ) : (
-                    <Play className="h-8 w-8 translate-x-0.5 fill-current" />
-                  )}
-                </button>
+                {/* Center Gold Decorative Graphic */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none p-6 text-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-amber-400/50 bg-black/60 text-amber-400 backdrop-blur-md shadow-xl shadow-amber-500/10 mb-3 group-hover:border-amber-400 transition-colors">
+                    <Laptop className="h-8 w-8 text-amber-400" />
+                  </div>
+                  <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-amber-400 drop-shadow">
+                    ONESKILLS TECH LABS
+                  </span>
+                  <span className="font-heading text-lg sm:text-xl font-bold text-white mt-1 drop-shadow-md">
+                    Real Projects. Real Experience.
+                  </span>
+                </div>
 
                 {/* Bottom Overlay Label */}
-                <div className="absolute bottom-4 left-5 right-5 pointer-events-none flex items-center justify-between text-xs text-white">
-                  <div className="flex items-center gap-2">
+                <div className="absolute bottom-4 left-5 right-5 pointer-events-none flex items-center justify-between text-xs text-white z-10">
+                  <div className="flex items-center gap-2 rounded-full bg-black/60 border border-white/10 px-3 py-1 backdrop-blur-md">
                     <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="font-semibold tracking-wide">Live Laboratory Session</span>
+                    <span className="font-semibold tracking-wide text-zinc-200">Live Laboratory Sessions</span>
                   </div>
-                  <span className="font-mono text-amber-300">Classroom & Online</span>
+                  <span className="font-mono text-xs text-amber-300 bg-black/60 border border-amber-500/20 rounded-full px-2.5 py-1 backdrop-blur-md">
+                    Classroom & Online
+                  </span>
                 </div>
               </div>
             </motion.div>

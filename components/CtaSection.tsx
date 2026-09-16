@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import Image from 'next/image';
 import { motion } from 'motion/react';
 import { Sparkles, ArrowRight, Compass, ShieldCheck } from 'lucide-react';
 
@@ -11,33 +12,15 @@ interface CtaSectionProps {
 
 export default function CtaSection({ onJoin, onExploreCourses }: CtaSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
-
-    video.defaultMuted = true;
-    video.muted = true;
-
-    const playVideo = () => {
-      const promise = video.play();
-      if (promise !== undefined) {
-        promise.catch(() => {});
-      }
-    };
-
-    playVideo();
-
-    const handlePause = () => {
-      if (video && video.paused) {
-        playVideo();
-      }
-    };
-
-    video.addEventListener('pause', handlePause);
-    return () => {
-      video.removeEventListener('pause', handlePause);
-    };
+    if (video) {
+      video.defaultMuted = true;
+      video.muted = true;
+      video.play().catch(() => {});
+    }
   }, []);
 
   return (
@@ -45,20 +28,32 @@ export default function CtaSection({ onJoin, onExploreCourses }: CtaSectionProps
       id="cta"
       className="relative w-full py-28 sm:py-36 bg-black overflow-hidden border-t border-white/10"
     >
-      {/* Background Dark Video with Students Working */}
-      <div className="absolute inset-0 z-0 h-full w-full">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1920&q=80"
-          className="h-full w-full object-cover opacity-30 scale-105"
-        >
-          <source src="/videos/cta-coding.mp4" type="video/mp4" />
-        </video>
+      {/* Background Cinematic Video */}
+      <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
+        {/* Poster Fallback */}
+        <Image
+          src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1920&q=80"
+          alt="OneSkills Coding and Tech Acceleration"
+          fill
+          className={`object-cover scale-105 transition-opacity duration-700 ${videoError ? 'opacity-25' : 'opacity-0'}`}
+          referrerPolicy="no-referrer"
+        />
+
+        {!videoError && (
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1920&q=80"
+            onError={() => setVideoError(true)}
+            className="h-full w-full object-cover opacity-25 scale-105"
+          >
+            <source src="/videos/cta-coding.mp4" type="video/mp4" />
+          </video>
+        )}
 
         {/* Ambient Dark Overlays */}
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-black/85 to-black/75" />
