@@ -1,0 +1,6 @@
+{
+  "name": "OneSkills Academy",
+  "description": "Premium modern technology and career academy empowering students with practical digital skills, freelancing, and career development.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
